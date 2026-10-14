@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--
+  rclone rcd 상주 (사서 데몬의 RC 백엔드)
+
+  사서(mailbox_daemon.py)가 편지당 rclone 서브프로세스를 띄우던 왕복
+  오버헤드(기동+OAuth 2~3s/호출)를 없앤다. 127.0.0.1 루프백 전용이라
+  "인바운드 제로" 원칙(외부 포트 없음) 위배 아님.
+
+  인증은 건다. 루프백이어도 인증 없는 rcd 는 이 기계의 브라우저가 연 아무
+  페이지가 보낸 요청(localhost CSRF)까지 받는다 — Drive 원문 전체에 닿는 문이다.
+  처음 한 번 (config/ 는 gitignore — 리포에 안 올라간다):
+    PASS=$(python3 -c 'import secrets; print(secrets.token_urlsafe(24))')
+    printf 'memex:%s
+' "$PASS" > ~/memtrail/config/rclone_rc_auth
+    chmod 600 ~/memtrail/config/rclone_rc_auth
+    printf '%s' "$PASS" | htpasswd -iBc ~/memtrail/config/rclone_rc.htpasswd memex
+  사서(mailbox_daemon.py)는 config/rclone_rc_auth 를 읽어 Basic 인증을 붙인다.
+  자격을 바꾸면 이 잡과 사서를 둘 다 재시작할 것.
+
+  설치:
+    cp scripts/com.memex.rclone-rcd.plist ~/Library/LaunchAgents/
+    launchctl bootstrap gui/$(id -u) ~/Library/LaunchAgents/com.memex.rclone-rcd.plist
+  해제:
+    launchctl bootout gui/$(id -u)/com.memex.rclone-rcd
+  재시작:
+    launchctl kickstart -k gui/$(id -u)/com.memex.rclone-rcd
+  확인 (인증 없이는 401, 있으면 {}):
+    curl -s -u "$(cat ~/memtrail/config/rclone_rc_auth)" -X POST http://127.0.0.1:5572/rc/noop
+-->
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.memex.rclone-rcd</string>
+
+    <key>ProgramArguments</key>
+    <array>
+        <string>/Users/USERNAME/.local/bin/rclone</string>
+        <string>rcd</string>
+        <string>--rc-addr=127.0.0.1:5572</string>
+        <string>--rc-htpasswd</string>
+        <string>/Users/USERNAME/memtrail/config/rclone_rc.htpasswd</string>
+        <string>--log-level</string>
+        <string>ERROR</string>
+    </array>
+
+    <key>RunAtLoad</key>
+    <true/>
+    <key>KeepAlive</key>
+    <true/>
+    <key>ThrottleInterval</key>
+    <integer>30</integer>
+
+    <key>StandardOutPath</key>
+    <string>/Users/USERNAME/memex/logs/launchd_rclone_rcd.log</string>
+    <key>StandardErrorPath</key>
+    <string>/Users/USERNAME/memex/logs/launchd_rclone_rcd.err</string>
+</dict>
+</plist>

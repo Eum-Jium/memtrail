@@ -1,0 +1,10 @@
+# Memtrail 런타임 의존성 — 인덱싱 파이프라인 + 사서 데몬 (LLM 미사용)
+# 카드·프로필 생성은 구독 claude CLI(`claude -p`)로 돌아 파이썬 의존성이 없다
+langchain-chroma==1.1.0
+langchain-core==1.3.2
+langchain-huggingface==1.2.2
+sentence-transformers==5.4.1
+chromadb==1.5.8
+httpx==0.28.1
+# 웹 대화 수집 (scripts/collect_web_via_cdp.py — Chrome DevTools Protocol)
+websocket-client==1.8.0

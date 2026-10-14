@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--
+  memex 구간 제목 백필 launchd 잡 (macOS 용) — **호출형이다. 스케줄이 없다.**
+
+  무엇을 하나: 이미 있는 카드의 **블록 헤더 제목만** 다시 짓는다 (본문·회상어·턴 범위
+  불변). 구간 제목은 원래 「주제 10자」라 결말이 없었는데, 사서가 그것을 회상 결과에
+  싣게 되면서(명세 v5) 이름 하나로 "내가 찾는 대목이 여긴가" 를 갈라야 하게 됐다.
+  「도구 도입의 판단과 검증」으로는 못 가르고 「도구 비교 끝 → 도입 보류」이면
+  가른다. 대상은 블록이 둘 이상인 카드뿐이고, 처리한 카드에는 `# 구간표제:` 표식이
+  남아 다시 불러도 건너뛴다.
+
+  왜 launchd 를 경유하나: 구독 claude CLI 자격증명이 로그인 Keychain 에 있어
+  **SSH 세션에서 못 읽는다** (`claude -p` 가 rc=1 로 죽는다 — 2026-08-31 에 실제로
+  한 번 밟았다). card-backfill·drive-sync 와 같은 이유·같은 경로다.
+
+  설치법 — USERNAME 네 곳과 limit·jobs 를 실제 값으로 바꾼 뒤:
+    cp scripts/com.memex.segment-titles.plist ~/Library/LaunchAgents/
+    launchctl bootstrap gui/$(id -u) ~/Library/LaunchAgents/com.memex.segment-titles.plist
+  실행:   launchctl kickstart -k gui/$(id -u)/com.memex.segment-titles
+  진행:   tail -f ~/memtrail/logs/launchd_segment_titles.log
+  중단:   launchctl kill TERM gui/$(id -u)/com.memex.segment-titles
+  해제:   launchctl bootout gui/$(id -u)/com.memex.segment-titles
+
+  끝난 뒤 인덱스에 태운다 (구간 제목이 다리 청크의 `[주제]` 로 들어간다):
+    python scripts/index_incremental.py
+
+  RunAtLoad 도 StartInterval 도 없다 — 구독 호출을 쓰는 잡이 저절로 도는 것을
+  원하지 않는다. 사용량 한도에 걸리면 그 자리에서 멈추고, 다시 부르면 남은 것만
+  이어서 채운다 (표제 백필이 1,136회에서 한 번 그렇게 멈춘 전례가 있다).
+-->
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.memex.segment-titles</string>
+
+    <key>ProgramArguments</key>
+    <array>
+        <string>/Users/USERNAME/memtrail/.venv/bin/python</string>
+        <string>/Users/USERNAME/memtrail/scripts/build_memory_cards.py</string>
+        <string>--segment-titles</string>
+        <string>--limit</string>
+        <string>200</string>
+        <string>--jobs</string>
+        <string>4</string>
+    </array>
+
+    <key>WorkingDirectory</key>
+    <string>/Users/USERNAME/memtrail</string>
+
+    <key>EnvironmentVariables</key>
+    <dict>
+        <!-- claude 가 여기 있다. 빠지면 호출이 통째로 실패한다. -->
+        <key>PATH</key>
+        <string>/Users/USERNAME/.local/bin:/usr/local/bin:/opt/homebrew/bin:/usr/bin:/bin</string>
+        <key>MEMEX_DATA_DIR</key>
+        <string>/Users/USERNAME/memtrail</string>
+        <!-- 카드 작업엔 사고가 기여하지 않는다 — 표제 백필에서 8배 빨라진 것이 검증됐다. -->
+        <key>MAX_THINKING_TOKENS</key>
+        <string>0</string>
+        <!-- 파이프로 나가면 블록 버퍼링돼 진행 로그가 한참 늦게 뜬다. -->
+        <key>PYTHONUNBUFFERED</key>
+        <string>1</string>
+    </dict>
+
+    <key>StandardOutPath</key>
+    <string>/Users/USERNAME/memtrail/logs/launchd_segment_titles.log</string>
+    <key>StandardErrorPath</key>
+    <string>/Users/USERNAME/memtrail/logs/launchd_segment_titles.err</string>
+</dict>
+</plist>

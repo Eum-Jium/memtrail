@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--
+  claude.ai 웹 대화 + 코워크 세션 수집 launchd 잡 (macOS 용, 매일 03:40)
+
+  04:10 의 com.memex.drive-sync 보다 먼저 돌아야 그날 수집분이 카드·발행에 실린다.
+  Chrome 을 CDP 로 직접 몰기 때문에 LLM 도, 사람 승인도 필요 없다.
+
+  전제: 전용 프로필 ~/.memex-chrome 이 claude.ai 에 로그인돼 있을 것 (최초 1회).
+    /Users/USERNAME/memex/.venv/bin/python scripts/collect_web_via_cdp.py --login
+
+  설치:
+    cp scripts/com.memex.web-collect.plist ~/Library/LaunchAgents/
+    launchctl load ~/Library/LaunchAgents/com.memex.web-collect.plist
+  해제: launchctl unload ~/Library/LaunchAgents/com.memex.web-collect.plist
+  즉시 테스트: launchctl start com.memex.web-collect
+-->
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.memex.web-collect</string>
+
+    <key>ProgramArguments</key>
+    <array>
+        <string>/Users/USERNAME/memex/.venv/bin/python</string>
+        <string>/Users/USERNAME/memex/scripts/collect_web_via_cdp.py</string>
+        <string>--index</string>
+    </array>
+
+    <key>WorkingDirectory</key>
+    <string>/Users/USERNAME/memex</string>
+
+    <key>EnvironmentVariables</key>
+    <dict>
+        <key>PATH</key>
+        <string>/Users/USERNAME/.local/bin:/usr/local/bin:/opt/homebrew/bin:/usr/bin:/bin</string>
+        <key>MEMEX_DATA_DIR</key>
+        <string>/Users/USERNAME/memex</string>
+    </dict>
+
+    <key>StartCalendarInterval</key>
+    <dict>
+        <key>Hour</key>
+        <integer>3</integer>
+        <key>Minute</key>
+        <integer>40</integer>
+    </dict>
+
+    <key>StandardOutPath</key>
+    <string>/Users/USERNAME/memex/logs/launchd_web_collect.log</string>
+    <key>StandardErrorPath</key>
+    <string>/Users/USERNAME/memex/logs/launchd_web_collect.err</string>
+</dict>
+</plist>

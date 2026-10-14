@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--
+  memex Drive 동기화 launchd 잡 (macOS 용, 매일 04:10)
+
+  설치법 — 경로 세 곳(PYTHON, 스크립트, WorkingDirectory)을 실제 위치로 바꾼 뒤:
+    cp scripts/com.memex.drive-sync.plist ~/Library/LaunchAgents/
+    launchctl load ~/Library/LaunchAgents/com.memex.drive-sync.plist
+  해제: launchctl unload ~/Library/LaunchAgents/com.memex.drive-sync.plist
+  즉시 테스트: launchctl start com.memex.drive-sync
+-->
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.memex.drive-sync</string>
+
+    <key>ProgramArguments</key>
+    <array>
+        <!-- 실제 경로로 수정: 예) /Users/USERNAME/memex/.venv/bin/python -->
+        <string>/Users/USERNAME/memex/.venv/bin/python</string>
+        <string>/Users/USERNAME/memex/scripts/sync_memory_to_drive.py</string>
+    </array>
+
+    <key>WorkingDirectory</key>
+    <string>/Users/USERNAME/memex</string>
+
+    <key>EnvironmentVariables</key>
+    <dict>
+        <!-- claude / rclone 이 PATH 에 없으면 여기서 지정.
+             uv 로 설치한 claude·rclone 이 ~/.local/bin 에 있어 이 경로가 없으면
+             카드가 통째로 스텁으로 떨어진다 (조용히 — call_claude 가 로그 없이 None). -->
+        <key>PATH</key>
+        <string>/Users/USERNAME/.local/bin:/usr/local/bin:/opt/homebrew/bin:/usr/bin:/bin</string>
+        <key>MEMEX_DATA_DIR</key>
+        <string>/Users/USERNAME/memex</string>
+        <!-- Python stdout 이 파이프로 나가면 블록 버퍼링돼 진행 로그가 수십 분 늦게 뜬다.
+             2026-08-07 소급 때 이것 때문에 "멈춘 줄" 오해가 두 번 났다. -->
+        <key>PYTHONUNBUFFERED</key>
+        <string>1</string>
+    </dict>
+
+    <key>StartCalendarInterval</key>
+    <dict>
+        <key>Hour</key>
+        <integer>4</integer>
+        <key>Minute</key>
+        <integer>10</integer>
+    </dict>
+
+    <key>StandardOutPath</key>
+    <string>/Users/USERNAME/memex/logs/launchd_drive_sync.log</string>
+    <key>StandardErrorPath</key>
+    <string>/Users/USERNAME/memex/logs/launchd_drive_sync.err</string>
+</dict>
+</plist>

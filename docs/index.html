@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>Memtrail 벤치마킹 → 로드맵</title>
+<style>
+  :root {
+    --bg: #0e1116;
+    --panel: #161b22;
+    --panel-hi: #1f2630;
+    --line: #30363d;
+    --text: #e6edf3;
+    --muted: #7d8590;
+    --accent: #58a6ff;
+    --done: #3fb950;
+    --next: #f0b429;
+    --future: #8b949e;
+    --pink: #f778ba;
+    --cyan: #39c5cf;
+    --purple: #a371f7;
+    --orange: #ff8c42;
+    --red: #f85149;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Pretendard", "Apple SD Gothic Neo", sans-serif;
+    padding: 32px 24px;
+    line-height: 1.5;
+  }
+  .container { max-width: 1200px; margin: 0 auto; }
+  h1 {
+    font-size: 28px;
+    margin: 0 0 4px;
+    letter-spacing: -0.5px;
+  }
+  .subtitle {
+    color: var(--muted);
+    margin-bottom: 32px;
+    font-size: 14px;
+  }
+  .section-label {
+    font-size: 11px;
+    letter-spacing: 2px;
+    color: var(--muted);
+    text-transform: uppercase;
+    margin: 28px 0 12px;
+    font-weight: 600;
+  }
+
+  /* benchmark cards */
+  .bench-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 12px;
+  }
+  .bench-card {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 14px;
+    border-top: 3px solid var(--c, var(--accent));
+  }
+  .bench-card .name { font-weight: 700; font-size: 16px; margin-bottom: 4px; }
+  .bench-card .tag { font-size: 11px; color: var(--muted); margin-bottom: 8px; }
+  .bench-card .steal { font-size: 12px; color: var(--text); line-height: 1.4; }
+
+  /* funnel arrow */
+  .funnel {
+    text-align: center;
+    color: var(--muted);
+    margin: 16px 0 12px;
+    font-size: 20px;
+    letter-spacing: 8px;
+  }
+
+  /* ideas list */
+  .ideas-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 12px;
+  }
+  .idea-card {
+    background: var(--panel-hi);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 14px;
+    position: relative;
+  }
+  .idea-num {
+    position: absolute; top: 8px; right: 10px;
+    font-size: 11px; color: var(--muted);
+  }
+  .idea-card .title { font-size: 13px; font-weight: 700; margin-bottom: 6px; }
+  .idea-card .src { font-size: 11px; color: var(--c, var(--accent)); margin-bottom: 6px; }
+  .idea-card .why { font-size: 11px; color: var(--muted); line-height: 1.4; }
+
+  /* timeline */
+  .timeline {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 24px;
+    margin-top: 8px;
+  }
+  .phases {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 8px;
+    position: relative;
+  }
+  .phase {
+    background: var(--panel-hi);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 12px;
+    position: relative;
+    border-left: 4px solid var(--future);
+  }
+  .phase.done { border-left-color: var(--done); }
+  .phase.next { border-left-color: var(--next); box-shadow: 0 0 0 2px rgba(240,180,41,0.2); }
+  .phase .num {
+    font-size: 11px; color: var(--muted); font-weight: 600;
+    letter-spacing: 1px;
+  }
+  .phase .title {
+    font-size: 13px; font-weight: 700; margin: 4px 0;
+  }
+  .phase .when { font-size: 11px; color: var(--muted); }
+  .phase .status {
+    display: inline-block;
+    font-size: 10px;
+    padding: 2px 6px;
+    border-radius: 10px;
+    margin-top: 8px;
+    font-weight: 600;
+  }
+  .status.done { background: rgba(63,185,80,0.15); color: var(--done); }
+  .status.next { background: rgba(240,180,41,0.18); color: var(--next); }
+  .status.future { background: rgba(139,148,158,0.15); color: var(--future); }
+
+  /* details */
+  .details-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-top: 12px;
+  }
+  .detail-panel {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 16px;
+  }
+  .detail-panel h3 {
+    margin: 0 0 10px;
+    font-size: 14px;
+    color: var(--accent);
+  }
+  .detail-panel ul { margin: 0; padding-left: 18px; font-size: 13px; color: var(--text); }
+  .detail-panel li { margin-bottom: 4px; }
+  .detail-panel .check { color: var(--done); margin-right: 4px; }
+  .detail-panel .pending { color: var(--next); margin-right: 4px; }
+
+  .footer {
+    margin-top: 32px;
+    color: var(--muted);
+    font-size: 12px;
+    text-align: center;
+    border-top: 1px solid var(--line);
+    padding-top: 16px;
+  }
+
+  @media (max-width: 900px) {
+    .bench-grid, .ideas-grid { grid-template-columns: repeat(2, 1fr); }
+    .phases { grid-template-columns: repeat(2, 1fr); }
+    .details-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>Memtrail — 벤치마킹 → 로드맵</h1>
+  <div class="subtitle">2026-04-27 메모리 레이어 5개 회사 벤치마킹 결과를 7개 Phase 로드맵으로 통합</div>
+
+  <div class="section-label">① 벤치마킹 대상 (Big 5)</div>
+  <div class="bench-grid">
+    <div class="bench-card" style="--c: var(--cyan)">
+      <div class="name">Mem0</div>
+      <div class="tag">가장 핫한 표준</div>
+      <div class="steal">⭐ 병렬 트리플 저장 + 융합 검색 (Vector + BM25 + 엔티티)</div>
+    </div>
+    <div class="bench-card" style="--c: var(--purple)">
+      <div class="name">Zep / Graphiti</div>
+      <div class="tag">시간 인식 강자</div>
+      <div class="steal">⭐ 사실에 valid_from/valid_to 기간 부여</div>
+    </div>
+    <div class="bench-card" style="--c: var(--orange)">
+      <div class="name">Letta (MemGPT)</div>
+      <div class="tag">OS처럼 메모리 관리</div>
+      <div class="steal">⭐ Hot / Warm / Cold 계층화 — LLM이 페이징</div>
+    </div>
+    <div class="bench-card" style="--c: var(--pink)">
+      <div class="name">Cognee</div>
+      <div class="tag">"6줄로 끝"</div>
+      <div class="steal">⭐ 깔끔한 API 디자인 — 사용자가 부르기 쉬움</div>
+    </div>
+    <div class="bench-card" style="--c: var(--red)">
+      <div class="name">OpenMemory / Stash</div>
+      <div class="tag">자가호스팅 진영</div>
+      <div class="steal">⭐ 메모리 자연 감쇠 + 자기 모델(self-model) 분리</div>
+    </div>
+  </div>
+
+  <div class="funnel">▼ ▼ ▼</div>
+
+  <div class="section-label">② Memtrail에 녹일 5가지 아이디어</div>
+  <div class="ideas-grid">
+    <div class="idea-card" style="--c: var(--cyan)">
+      <div class="idea-num">01</div>
+      <div class="title">하이브리드 트리플 저장</div>
+      <div class="src">← Mem0</div>
+      <div class="why">벡터 + 그래프 + KV 동시 저장. 단일 DB 한계 돌파</div>
+    </div>
+    <div class="idea-card" style="--c: var(--purple)">
+      <div class="idea-num">02</div>
+      <div class="title">시간 인식 그래프</div>
+      <div class="src">← Zep</div>
+      <div class="why">30년치에서 "지금 유효한 것"만 골라냄</div>
+    </div>
+    <div class="idea-card" style="--c: var(--orange)">
+      <div class="idea-num">03</div>
+      <div class="title">Hot/Warm/Cold 티어</div>
+      <div class="src">← Letta</div>
+      <div class="why">자주 쓰는 건 빠르게, 옛날 건 R2/Drive로</div>
+    </div>
+    <div class="idea-card" style="--c: var(--red)">
+      <div class="idea-num">04</div>
+      <div class="title">감쇠 + 강화</div>
+      <div class="src">← OpenMemory</div>
+      <div class="why">안 쓰면 잊고, 자주 쓰면 또렷이</div>
+    </div>
+    <div class="idea-card" style="--c: var(--pink)">
+      <div class="idea-num">05</div>
+      <div class="title">명시적 자기 모델 분리</div>
+      <div class="src">← Stash</div>
+      <div class="why">"나는 누구다"를 별도 테이블로</div>
+    </div>
+  </div>
+
+  <div class="funnel">▼ ▼ ▼</div>
+
+  <div class="section-label">③ 7-Phase 로드맵 (현재 위치)</div>
+  <div class="timeline">
+    <div class="phases">
+      <div class="phase done">
+        <div class="num">PHASE 0</div>
+        <div class="title">기반 정리</div>
+        <div class="when">2026-04</div>
+        <div class="status done">✅ 완료</div>
+      </div>
+      <div class="phase next">
+        <div class="num">PHASE 1</div>
+        <div class="title">그래프 레이어</div>
+        <div class="when">2026-Q3</div>
+        <div class="status next">▶ 다음 차례</div>
+      </div>
+      <div class="phase">
+        <div class="num">PHASE 2</div>
+        <div class="title">시간 인식</div>
+        <div class="when">2026-Q4</div>
+        <div class="status future">예정</div>
+      </div>
+      <div class="phase">
+        <div class="num">PHASE 3</div>
+        <div class="title">메모리 티어</div>
+        <div class="when">2027-Q1</div>
+        <div class="status future">예정</div>
+      </div>
+      <div class="phase">
+        <div class="num">PHASE 4</div>
+        <div class="title">감쇠 + 강화</div>
+        <div class="when">2027-Q2</div>
+        <div class="status future">예정</div>
+      </div>
+      <div class="phase done">
+        <div class="num">PHASE 5</div>
+        <div class="title">클라우드 배포</div>
+        <div class="when">2026-04-28</div>
+        <div class="status done">✅ 선행 완료</div>
+      </div>
+      <div class="phase">
+        <div class="num">PHASE 6</div>
+        <div class="title">자기 모델 확장</div>
+        <div class="when">2027-Q4</div>
+        <div class="status future">예정</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="details-grid">
+    <div class="detail-panel">
+      <h3>✅ Phase 0 — 완료된 것</h3>
+      <ul>
+        <li><span class="check">✓</span> memory_api → memex 리네이밍</li>
+        <li><span class="check">✓</span> Eum-Jium/memtrail repo (Apache 2.0)</li>
+        <li><span class="check">✓</span> 코드/데이터 분리 (MEMEX_DATA_DIR)</li>
+        <li><span class="check">✓</span> 문서 체계 (README, ARCHITECTURE, CONTRIBUTING)</li>
+        <li><span class="check">✓</span> Chroma DB 호환 유지</li>
+        <li><span class="check">✓</span> Railway 배포 + OAuth (Phase 5 선행)</li>
+      </ul>
+    </div>
+    <div class="detail-panel">
+      <h3>▶ Phase 1 — 다음에 할 일</h3>
+      <ul>
+        <li><span class="pending">○</span> SQLite 그래프 스키마 설계</li>
+        <li><span class="pending">○</span> 엔티티 추출 LLM 프롬프트 (Ollama qwen2.5)</li>
+        <li><span class="pending">○</span> 관계 추출 + alias 정규화</li>
+        <li><span class="pending">○</span> 기존 Chroma → 그래프 백필 (1회 배치)</li>
+        <li><span class="pending">○</span> MCP 도구: traverse_graph, find_related_entities</li>
+        <li><span class="pending">○</span> 융합 검색 (vector + graph) 점수 함수</li>
+        <li><span class="pending">○</span> 그래프 시각화 HTML (디버깅)</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="footer">
+    출처: <code>ROADMAP.md</code>
+    · 원칙: 평생 쌓이는 자산이므로 처음부터 제대로 짓는다
+  </div>
+</div>
+</body>
+</html>

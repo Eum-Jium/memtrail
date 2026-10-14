@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--
+  memex 우편함 사서 데몬 (상주, KeepAlive)
+  — 맥 전용 파일이다. 리눅스는 systemd unit, 윈도우는 작업 스케줄러로 같은 일을 한다.
+
+  설치:
+    cp scripts/com.memex.mailboxd.plist ~/Library/LaunchAgents/
+    launchctl bootstrap gui/$(id -u) ~/Library/LaunchAgents/com.memex.mailboxd.plist
+  해제:
+    launchctl bootout gui/$(id -u)/com.memex.mailboxd
+  재시작:
+    launchctl kickstart -k gui/$(id -u)/com.memex.mailboxd
+
+  LLM 미사용 (E5+Chroma 만) — claude 자격증명·Keychain 불필요라 SSH 설치 가능.
+-->
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.memex.mailboxd</string>
+
+    <key>ProgramArguments</key>
+    <array>
+        <string>/Users/USERNAME/memex/.venv/bin/python</string>
+        <string>/Users/USERNAME/memex/scripts/mailbox_daemon.py</string>
+    </array>
+
+    <key>WorkingDirectory</key>
+    <string>/Users/USERNAME/memex</string>
+
+    <key>EnvironmentVariables</key>
+    <dict>
+        <key>PATH</key>
+        <string>/Users/USERNAME/.local/bin:/usr/local/bin:/usr/bin:/bin</string>
+        <key>MEMEX_DATA_DIR</key>
+        <string>/Users/USERNAME/memex</string>
+        <!-- 모델은 HF 캐시로만 — 기동 시 네트워크 의존 제거 -->
+        <key>HF_HUB_OFFLINE</key>
+        <string>1</string>
+        <key>TRANSFORMERS_OFFLINE</key>
+        <string>1</string>
+        <!-- 폴링 간격: 스윕 실측의 무릎 (3s→7.83 / 2s→7.01 / 1s→6.82 E2E) -->
+        <key>MEMEX_MAILBOX_POLL</key>
+        <string>2</string>
+    </dict>
+
+    <key>RunAtLoad</key>
+    <true/>
+    <key>KeepAlive</key>
+    <true/>
+    <!-- 크래시 루프 방지: 재기동 최소 간격 -->
+    <key>ThrottleInterval</key>
+    <integer>30</integer>
+
+    <key>StandardOutPath</key>
+    <string>/Users/USERNAME/memex/logs/launchd_mailboxd.log</string>
+    <key>StandardErrorPath</key>
+    <string>/Users/USERNAME/memex/logs/launchd_mailboxd.err</string>
+</dict>
+</plist>

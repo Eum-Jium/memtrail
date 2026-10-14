@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--
+  memex 카드 백필 launchd 잡 (macOS 용) — **호출형이다. 스케줄이 없다.**
+
+  왜 launchd 를 경유하나: 카드 생성은 구독 claude CLI 를 쓰는데, macOS 는 그 자격증명이
+  로그인 Keychain 에 있어 **SSH 세션에서 못 읽는다** (`claude -p` 가 stdout 에
+  "Not logged in · Please run /login" 을 뱉고 rc=1). launchd GUI 도메인(gui/<uid>)에서
+  돌면 로그인 세션의 Keychain 이 열려 있어 정상 동작한다. 발행 잡(drive-sync)을
+  SSH 에서 직접 실행하지 않고 kickstart 로 부르는 이유와 같다.
+
+  한 번에 몇 장을 만들지는 MEMTRAIL_BACKFILL_LIMIT 로 정한다. 백필은 **이미 카드가 있는
+  대화를 건너뛰므로** 몇 번을 불러도 이어서 채운다 (LLM 이 죽으면 스텁을 남기지 않고
+  그 자리에서 멈춘다 — build_memory_cards.backfill_cards 참조).
+
+  설치법 — USERNAME 세 곳과 limit 을 실제 값으로 바꾼 뒤:
+    cp scripts/com.memex.card-backfill.plist ~/Library/LaunchAgents/
+    launchctl bootstrap gui/$(id -u) ~/Library/LaunchAgents/com.memex.card-backfill.plist
+  실행:   launchctl kickstart -k gui/$(id -u)/com.memex.card-backfill
+  진행:   tail -f ~/memtrail/logs/launchd_card_backfill.log
+  중단:   launchctl kill TERM gui/$(id -u)/com.memex.card-backfill
+  해제:   launchctl bootout gui/$(id -u)/com.memex.card-backfill
+
+  RunAtLoad 도 StartInterval 도 없다 — bootstrap 해두어도 부르지 않으면 아무 일도
+  일어나지 않는다. 구독 호출을 쓰는 잡이라 저절로 도는 것을 원하지 않는다.
+-->
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.memex.card-backfill</string>
+
+    <key>ProgramArguments</key>
+    <array>
+        <string>/Users/USERNAME/memtrail/.venv/bin/python</string>
+        <string>/Users/USERNAME/memtrail/scripts/build_memory_cards.py</string>
+        <string>--backfill</string>
+        <string>--limit</string>
+        <string>50</string>
+    </array>
+
+    <key>WorkingDirectory</key>
+    <string>/Users/USERNAME/memtrail</string>
+
+    <key>EnvironmentVariables</key>
+    <dict>
+        <!-- claude 가 여기 있다. 빠지면 카드가 통째로 스텁으로 떨어진다. -->
+        <key>PATH</key>
+        <string>/Users/USERNAME/.local/bin:/usr/local/bin:/opt/homebrew/bin:/usr/bin:/bin</string>
+        <key>MEMEX_DATA_DIR</key>
+        <string>/Users/USERNAME/memtrail</string>
+        <!-- 파이프로 나가면 블록 버퍼링돼 진행 로그가 한참 늦게 뜬다 (drive-sync 와 같은 함정). -->
+        <key>PYTHONUNBUFFERED</key>
+        <string>1</string>
+    </dict>
+
+    <key>StandardOutPath</key>
+    <string>/Users/USERNAME/memtrail/logs/launchd_card_backfill.log</string>
+    <key>StandardErrorPath</key>
+    <string>/Users/USERNAME/memtrail/logs/launchd_card_backfill.err</string>
+</dict>
+</plist>

@@ -1,0 +1,7 @@
+# 로컬 CLI/배치 추가 의존성
+#
+# 2026-08-15 현재 비어 있다. 유일한 항목이던 langchain-ollama 는 월초 프로필
+# 재합성이 Ollama → 구독 claude CLI 로 옮겨가며 필요 없어졌다 (generate_profile.py).
+# LLM 을 쓰는 곳은 이제 전부 `claude -p` 라 파이썬 의존성이 붙지 않는다.
+#
+# 사용법: pip install -r requirements.txt -r requirements-local.txt

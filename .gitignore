@@ -1,0 +1,105 @@
+# ─────────────────────────────────────────────
+# Memtrail .gitignore
+# ─────────────────────────────────────────────
+
+# === 민감 데이터 (절대 커밋 금지) ===
+# ChromaDB 벡터 저장소 (+ .old/.stale/.retired 세대 보관본)
+memory_db*/
+# 임베딩 비교 실험 DB (test_embeddings.py 산출물 — 실제 대화 임베딩, 개인정보)
+test_db_*/
+# 사용자 프로필/내러티브 (개인정보)
+memory/
+# 정본 프로필 레이어 — 이력·결정·인물 (개인정보). 손으로 유지, 상시 PC 엔 tar push 로 간다
+canon/
+# Claude.ai 대화 원본 (개인정보)
+conversations/
+# 다운로드 캐시
+claude_downloads/
+# Claude.ai 세션 쿠키 (인증 토큰!)
+claude_session.txt
+# 모든 세션 파일
+*.session
+# 환경변수 (API 키 등)
+.env
+.env.local
+.env.*.local
+
+# Drive 동기화 파생물 (대화 요약 카드 — 개인정보)
+cards/
+rollups/
+drive_export/
+logs/
+# 냉동 보관물 (원본 export · 세션 JSONL 등). 상시 PC 는 리포=데이터 폴더라
+# 여기 없으면 status 가 영영 더럽다 — 진짜 변경이 그 노이즈에 묻힌다.
+archive/
+# 화두 스레드 (promote_thread 산출물 — 카드 요약 포함, 개인정보)
+threads/
+# 로컬 바이너리
+*.exe
+# 스킬 배포용 zip (SKILL.md 에서 재생성 가능한 빌드 산출물)
+skills/*.zip
+skill_build/
+# config/ 아래는 개인 답안지·토큰·패턴 목록 자리라 예시 파일 하나만 추적한다.
+# (Drive ID 답안지 skill_ids.json · 출처 판정 목록 · claude CLI 장수명 토큰 등 —
+#  토큰은 자격증명이니 chmod 600 으로 둘 것)
+config/*
+!config/topic_vocab.md
+# 원본 export 가 데이터 루트에 놓이는 기기 대비 (루트 한정)
+/*.zip
+/*.json
+
+# === Python ===
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# === 가상환경 ===
+.venv/
+.venv_new/
+venv/
+env/
+ENV/
+
+# === 로그 / 임시 ===
+*.log
+mcp_server.log
+analysis_checkpoints/
+*.tmp
+*.bak
+
+# === IDE / 편집기 ===
+.vscode/
+.idea/
+*.sublime-*
+.DS_Store
+Thumbs.db
+
+# === Claude Code worktree 흔적 ===
+.claude/worktrees/
+.claude/settings.local.json
+
+# 로컬 개인 스킬 — memory/ 와 같은 성격(개인). 리포에 싣는 스킬은 skills/ 에 있다
+.claude/skills/
+
+# === 미래를 위한 슬롯 (그래프DB / 모델) ===
+# SQLite 그래프 DB
+*.db
+*.duckdb
+graph.sqlite*
+# 다운받은 모델 가중치
+models/
+embeddings_cache/
+
+# === 백업 ===
+*.backup
+backup/
+
+# 우편함 (기계 생성물 — 상시 PC 가 정본 생성)
+manifest.json
+# trail 집계 state (기계 생성물 — processed/ 영수증에서 재구성 가능)
+trail/

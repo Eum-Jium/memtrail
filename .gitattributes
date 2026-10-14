@@ -1,0 +1,2 @@
+# bash 스크립트는 항상 LF (CRLF 로 체크아웃되면 macOS/Git Bash 에서 실행 깨짐)
+*.sh text eol=lf

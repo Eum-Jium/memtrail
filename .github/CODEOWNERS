@@ -1,0 +1,21 @@
+# Memtrail CODEOWNERS
+# 설계·거버넌스 파일은 maintainer 리뷰를 거친다
+
+# === 기본 owner ===
+*                                @Eum-Jium
+
+# === 핵심 아키텍처 (반드시 owner 리뷰 필수) ===
+ARCHITECTURE.md                  @Eum-Jium
+ROADMAP.md                       @Eum-Jium
+scripts/mailbox_daemon.py        @Eum-Jium
+memory_pipeline.py               @Eum-Jium
+.gitignore                       @Eum-Jium
+.env.example                     @Eum-Jium
+
+# === 라이선스 / 거버넌스 ===
+LICENSE                          @Eum-Jium
+CODE_OF_CONDUCT.md               @Eum-Jium
+CONTRIBUTING.md                  @Eum-Jium
+
+# === GitHub 설정 ===
+.github/                         @Eum-Jium
