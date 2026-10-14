@@ -2,6 +2,8 @@
 
 **한국어** | [English](README.en.md) | [中文](README.zh.md)
 
+> **공개 스냅샷 · 2026-10-14 동결.** 이 리포는 그 시점의 공개본이다. 개발은 비공개로 이어지고 여기는 갱신되지 않는다.
+
 > *"The human mind operates by association. ... in accordance with some intricate web of **trails** carried by the cells of the brain."*
 > — Vannevar Bush, *"As We May Think"* (1945)
 
@@ -756,5 +758,5 @@ Memtrail 의 정체는 코드가 아니라 프로토콜이다.
 
 ## 기여
 
-이슈·PR 환영. 가이드: [CONTRIBUTING.md](CONTRIBUTING.md) ·
-[행동 강령](CODE_OF_CONDUCT.md)
+동결된 공개 스냅샷이라 이슈·PR 은 받지 않는다. 포크해서 고쳐 쓰는 건 자유다 (Apache 2.0).
+가이드: [CONTRIBUTING.md](CONTRIBUTING.md) · [행동 강령](CODE_OF_CONDUCT.md)

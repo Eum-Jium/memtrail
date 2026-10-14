@@ -2,6 +2,8 @@
 
 [한국어](README.md) | [English](README.en.md) | **中文**
 
+> **公开快照 · 2026-10-14 冻结。** 本仓库是该时间点的公开版本。开发转为非公开继续，此处不再更新。
+
 > *"The human mind operates by association. ... in accordance with some intricate web of **trails** carried by the cells of the brain."*
 > *人类的心智以联想运作。……循着由脑细胞承载的、某种错综复杂的**足迹(trail)**之网。*
 > — Vannevar Bush, *"As We May Think"* (1945)
@@ -606,5 +608,5 @@ Memtrail 的本体不是代码，而是协议。
 
 ## 贡献
 
-欢迎 Issue 与 PR。指南：[CONTRIBUTING.md](CONTRIBUTING.md) ·
-[行为准则](CODE_OF_CONDUCT.md)
+本仓库是冻结的公开快照，不接受 Issue 与 PR。欢迎 fork 后自行修改（Apache 2.0）。
+指南：[CONTRIBUTING.md](CONTRIBUTING.md) · [行为准则](CODE_OF_CONDUCT.md)

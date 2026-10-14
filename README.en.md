@@ -2,6 +2,8 @@
 
 [한국어](README.md) | **English** | [中文](README.zh.md)
 
+> **Public snapshot · frozen 2026-10-14.** This repository is the public copy as of that date. Development continues privately; this copy is not updated.
+
 > *"The human mind operates by association. ... in accordance with some intricate web of **trails** carried by the cells of the brain."*
 > — Vannevar Bush, *"As We May Think"* (1945)
 
@@ -847,5 +849,5 @@ started from [nir3y/Memory-Layer](https://github.com/nir3y/Memory-Layer) (Apache
 
 ## Contributing
 
-Issues and PRs welcome. Guide: [CONTRIBUTING.md](CONTRIBUTING.md) ·
-[Code of conduct](CODE_OF_CONDUCT.md)
+This is a frozen public snapshot, so issues and PRs are not accepted. Forking and adapting it is welcome (Apache 2.0).
+Guide: [CONTRIBUTING.md](CONTRIBUTING.md) · [Code of conduct](CODE_OF_CONDUCT.md)
