@@ -2,7 +2,7 @@
 
 [한국어](README.md) | [English](README.en.md) | **中文**
 
-> **公开快照 · 2026-10-14 冻结。** 本仓库是该时间点的公开版本。开发转为非公开继续，此处不再更新。
+> **关于公开版** — 开发在非公开仓库中继续，整理好的内容会搬到这里。最近一次搬运：2026-10-14。欢迎在 [Issue](https://github.com/Eum-Jium/memtrail/issues) 中提问与反馈。
 
 > *"The human mind operates by association. ... in accordance with some intricate web of **trails** carried by the cells of the brain."*
 > *人类的心智以联想运作。……循着由脑细胞承载的、某种错综复杂的**足迹(trail)**之网。*
@@ -12,9 +12,13 @@
 
 *你的数据不会离开你本来就信任的存储。*
 
+**适合谁** — 经常和 AI 对话、想在之后重新调出当时的决定与想法的人；不希望自动记忆混入新对话的人；只拿着手机也需要能回忆的人。
+
+**需要什么** — 一台常开的电脑（低功耗迷你主机即可）· Google Drive · 一个你已订阅的 AI CLI。无需付费向量数据库，无需 API 密钥。
+
 [![License: Apache 2.0](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
-[![Status: Active Development](https://img.shields.io/badge/status-active--dev-yellow)]()
+[![Public copy: 2026-10-14](https://img.shields.io/badge/public_copy-2026--10--14-blue)]()
 
 ---
 
@@ -608,5 +612,5 @@ Memtrail 的本体不是代码，而是协议。
 
 ## 贡献
 
-本仓库是冻结的公开快照，不接受 Issue 与 PR。欢迎 fork 后自行修改（Apache 2.0）。
+欢迎通过 Issue 提问、报告问题与反馈。不接受 PR — 代码从非公开源仓库搬运而来。欢迎 fork 后自行修改（Apache 2.0）。
 指南：[CONTRIBUTING.md](CONTRIBUTING.md) · [行为准则](CODE_OF_CONDUCT.md)

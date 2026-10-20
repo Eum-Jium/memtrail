@@ -2,7 +2,7 @@
 
 [한국어](README.md) | **English** | [中文](README.zh.md)
 
-> **Public snapshot · frozen 2026-10-14.** This repository is the public copy as of that date. Development continues privately; this copy is not updated.
+> **About this public copy** — Development continues in a private repository; cleaned-up changes are brought over here. Last brought over 2026-10-14. Questions and reports are welcome in [Issues](https://github.com/Eum-Jium/memtrail/issues).
 
 > *"The human mind operates by association. ... in accordance with some intricate web of **trails** carried by the cells of the brain."*
 > — Vannevar Bush, *"As We May Think"* (1945)
@@ -12,9 +12,14 @@ verified use over access frequency.**
 
 *Your data never leaves storage you already trust.*
 
+**Who it's for** — people who talk with AI a lot and want to pull back what they decided or thought back then;
+who don't want automatic memory leaking into new chats; who need recall even with just a phone in hand.
+
+**What you need** — one always-on PC (a low-power mini PC is enough) · Google Drive · one AI CLI you already subscribe to. No paid vector DB, no API key.
+
 [![License: Apache 2.0](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
-[![Status: Active Development](https://img.shields.io/badge/status-active--dev-yellow)]()
+[![Public copy: 2026-10-14](https://img.shields.io/badge/public_copy-2026--10--14-blue)]()
 
 ---
 
@@ -849,5 +854,5 @@ started from [nir3y/Memory-Layer](https://github.com/nir3y/Memory-Layer) (Apache
 
 ## Contributing
 
-This is a frozen public snapshot, so issues and PRs are not accepted. Forking and adapting it is welcome (Apache 2.0).
+Issues (questions, bugs, reports) are welcome. Pull requests are not accepted — the code is brought over from a private source. Forking and adapting it is welcome (Apache 2.0).
 Guide: [CONTRIBUTING.md](CONTRIBUTING.md) · [Code of conduct](CODE_OF_CONDUCT.md)
